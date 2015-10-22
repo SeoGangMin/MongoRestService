@@ -85,8 +85,8 @@ if(cluster.isMaster){
   // will print stacktrace
   if (app.get('env') === 'development') {
     app.use(function(err, req, res, next) {
-      console.log(err);
-      res.status(err.status || 500);      
+      console.log(err.stack);
+      res.status(err.status || 500);
       res.send(err);
     });
   }
@@ -94,7 +94,7 @@ if(cluster.isMaster){
   // production error handler
   // no stacktraces leaked to user
   app.use(function(err, req, res, next) {
-    console.log(JSON.stringify(err));
+    console.log(err.stack);
     res.status(err.status || 500);
     res.send(err);
 

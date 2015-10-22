@@ -4,7 +4,6 @@ var mongodb      = require('mongodb')
     ,Join        = require('mongo-join').Join
     ,Q           = require('q');
 
-var DATABASE_NAME = "";
 var HOST          = "";
 
 var options = {
@@ -15,33 +14,58 @@ var options = {
   }
 };
 
-var client = null;
-var collections = {};
+var databases = {};
 
-MongoClient.connect(getDatabaseUri(HOST, DATABASE_NAME), options, function(err, db){
-  if(err){
-    if(db){
-      db.close();
-    }
+function connectDatabase(database_name){
+  var deffered = Q.defer();
+  if(databases[database_name]){
+    deffered.resolve( databases[database_name]['db'] );
   }else{
-    client = db;
-    client.on('close', function(){
-      client = null;
-      collections = {};
+    MongoClient.connect(getDatabaseUri(HOST, database_name), options, function(err, db){
+      if(err){
+        if(db){
+          db.close();
+        }
+        deffered.reject( err );
+      }else{
+        if(!databases[database_name]){
+          databases[database_name] = {};
+        }
+        databases[database_name]['db'] = db;
+        databases[database_name]['collections'] = {};
+        databases[database_name]['db'].on('close', function(){
+          delete databases[database_name];
+        });
+        deffered.resolve( databases[database_name]['db']);
+      }
     });
   }
-});
+  return deffered.promise;
+}
 
-exports.getCollection = function(name){
+exports.getCollection = function(database_name, collection_name){
   var deffered = Q.defer();
-  if(client){
-    if(!collections[name]){
-      collections[name] = client.collection(name);
-    }
-    deffered.resolve(collections[name]);
+  var collection = null;
+  if(!databases[database_name]){
+    connectDatabase(database_name)
+    .then(
+      function( db ){
+        databases[database_name]['collections'][collection_name] = databases[database_name]['db'].collection(collection_name);
+        deffered.resolve( databases[database_name]['collections'][collection_name] );
+      },
+      function( err ){
+        deffered.reject( err );
+      }
+    );
   }else{
-    console.log('not connected');
-    deffered.reject(new Error('not connected'));
+    if(!databases[database_name]['collections'][collection_name]){
+      console.log('collection off');
+      databases[database_name]['collections'][collection_name] = databases[database_name]['db'].collection(collection_name);
+      deffered.resolve( databases[database_name]['collections'][collection_name] );
+    }else{
+      console.log('collection on');
+      deffered.resolve( databases[database_name]['collections'][collection_name] );
+    }
   }
 
   return deffered.promise;

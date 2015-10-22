@@ -23,10 +23,11 @@ var MongoWrapper = _Common.MongoWrapper;
  * @apiSuccess {Object} result 요청한 Documents
  *
  */
-router.get('/find', function(req, res, next){
-  var params          = JSON.parse(req.query.params);
-  console.log(params);
-  var collection_name = params.collection;
+router.get('/:database_name/:collection_name/find', function(req, res, next){
+  var database_name   = req.params.database_name;
+  var collection_name = req.params.collection_name;
+
+  var params     = JSON.parse(req.query.params);
   var find       = params.find;
   var sort       = params.sort;
   var skip       = params.page_number;
@@ -47,7 +48,7 @@ router.get('/find', function(req, res, next){
     }
   }
 
-  Mongo.getCollection(collection_name)
+  Mongo.getCollection(database_name, collection_name)
   .then(
     function( collection ){
       return MongoWrapper.findDocs( collection, find, {sort:sort, skip:skip, limit:limit}, join_colls);
@@ -81,13 +82,15 @@ router.get('/find', function(req, res, next){
  * @apiSuccess {Object} result 생성된 Document
  *
  */
-router.post('/create',function(req, res, next){
-  var collection_name = req.body.collection;
+router.post('/:database_name/:collection_name/create',function(req, res, next){
+  var database_name   = req.params.database_name;
+  var collection_name = req.params.collection_name;
+
   var create_doc      = req.body.create_doc;
 
   console.log(req.body);
 
-  Mongo.getCollection(collection_name)
+  Mongo.getCollection(database_name, collection_name)
   .then(
     function( collection ){
       return MongoWrapper.createDoc(collection, create_doc);
@@ -107,14 +110,16 @@ router.post('/create',function(req, res, next){
   )
 });
 
-router.post('/findAndModify',function(req, res, next){
-  var collection_name = req.body.collection;
+router.post('/:database_name/:collection_name/findAndModify',function(req, res, next){
+  var database_name   = req.params.database_name;
+  var collection_name = req.params.collection_name;
+
   var find            = req.body.find;
   var update          = req.body.update;
 
   console.log(req.body);
 
-  Mongo.getCollection(collection_name)
+  Mongo.getCollection(database_name, collection_name)
   .then(
     function( collection ){
       return MongoWrapper.findAndModify(collection, find, update);
@@ -133,13 +138,15 @@ router.post('/findAndModify',function(req, res, next){
   );
 });
 
-router.post('/delete', function(req, res, next){
-  var collection_name = req.body.collection;
+router.post('/:database_name/:collection_name/delete', function(req, res, next){
+  var database_name   = req.params.database_name;
+  var collection_name = req.params.collection_name;
+
   var find            = req.body.find;
-  Mongo.getCollection(collection_name)
+  Mongo.getCollection(database_name, collection_name)
   .then(
     function( collection ){
-      
+
     }
     ,function( err ){
       next(err);
