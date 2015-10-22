@@ -1,0 +1,8 @@
+{
+  "APP":{
+    "TITLE":"LogService",
+    "PORT" : 1338
+  },
+  "CONNECT_TIME":120000,
+  "SESSION_TIME":86400000
+}
