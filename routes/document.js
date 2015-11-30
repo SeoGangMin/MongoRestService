@@ -130,9 +130,11 @@ router.post('/:database_name/:collection_name/findAndModify',function(req, res, 
   )
   .then(
     function( doc ){
+      console.log(doc);
       res.status(200).send({result:doc})
     }
     ,function( err ){
+      console.log(err);
       next(err);
     }
   );

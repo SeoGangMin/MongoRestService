@@ -99,9 +99,10 @@ module.exports = {
 
   ,findAndModify : function(collection, find, update){
     var deffered = Q.defer();
+    
     Mongo.getNextSeqNumber(collection)
     .then(
-      function( nextSeq ){        
+      function( nextSeq ){
         if(Object.keys(update).length > 0){
           update[Object.keys(update)[0]]['seq_number'] = nextSeq;
         }

@@ -4,7 +4,7 @@ var mongodb      = require('mongodb')
     ,Join        = require('mongo-join').Join
     ,Q           = require('q');
 
-var HOST          = "";
+var HOST          = "localhost:27017";
 
 var options = {
   poolSize : 10,
