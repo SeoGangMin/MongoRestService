@@ -1,7 +1,7 @@
 var ObjectID    = require('bson-objectid');
 
 module.exports = {
-  getObjectId : function(){
+  getObjectId : function(ids){
     var retVal = null;
     if(Array.isArray(ids)){
       retVal = [];
