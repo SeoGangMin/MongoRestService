@@ -99,7 +99,7 @@ module.exports = {
 
   ,findAndModify : function(collection, find, update){
     var deffered = Q.defer();
-    
+
     Mongo.getNextSeqNumber(collection)
     .then(
       function( nextSeq ){
@@ -129,6 +129,24 @@ module.exports = {
     );
 
     return deffered.promise;
-
+  }
+  ,remove : function(collection, find){
+    var deferred = Q.defer();
+    Mongo.getCollection(collection_name)
+    .then(
+      function(collection){
+        collection.remove(find, function(err, result){
+          if(err){
+            deferred.reject(err);
+          }else{
+            deferred.resolve(result);
+          }
+        });
+      }
+      ,function(err){
+        deferred.reject(err);
+      }
+    );
+    return deferred.promise;
   }
 };

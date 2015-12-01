@@ -145,10 +145,27 @@ router.post('/:database_name/:collection_name/delete', function(req, res, next){
   var collection_name = req.params.collection_name;
 
   var find            = req.body.find;
+
+  if(find['_id']){
+    if(find['_id']['$in']){
+      find['_id']['$in'] = db.getObjectId(find['_id']['$in']);
+    }else{
+      find['_id'] = db.getObjectId(find['_id']);
+    }
+  }
+
   Mongo.getCollection(database_name, collection_name)
   .then(
     function( collection ){
-
+      return MongoWrapper.remove(collection, find);
+    }
+    ,function( err ){
+      next(err);
+    }
+  )
+  .then(
+    function( removed ){
+      res.status(200).send({result:'success'});
     }
     ,function( err ){
       next(err);
