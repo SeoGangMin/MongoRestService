@@ -3,7 +3,7 @@ var express = require('express');
 var router  = express.Router();
 var Mongo      = _Common.Mongo;
 var MongoWrapper = _Common.MongoWrapper;
-
+var Util       = _Common.Util;
 /**
  * @apiVersion 0.0.1
  * @api {get} /document/query Query Documents
@@ -42,9 +42,9 @@ router.get('/:database_name/:collection_name/find', function(req, res, next){
 
   if(find['_id']){
     if(find['_id']['$in']){
-      find['_id']['$in'] = db.getObjectId(find['_id']['$in']);
+      find['_id']['$in'] = Util.getObjectId(find['_id']['$in']);
     }else{
-      find['_id'] = db.getObjectId(find['_id']);
+      find['_id'] = Util.getObjectId(find['_id']);
     }
   }
 
@@ -148,9 +148,9 @@ router.post('/:database_name/:collection_name/remove', function(req, res, next){
 
   if(find['_id']){
     if(find['_id']['$in']){
-      find['_id']['$in'] = db.getObjectId(find['_id']['$in']);
+      find['_id']['$in'] = Util.getObjectId(find['_id']['$in']);
     }else{
-      find['_id'] = db.getObjectId(find['_id']);
+      find['_id'] = Util.getObjectId(find['_id']);
     }
   }
 
