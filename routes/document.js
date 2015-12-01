@@ -157,7 +157,7 @@ router.post('/:database_name/:collection_name/remove', function(req, res, next){
   Mongo.getCollection(database_name, collection_name)
   .then(
     function( collection ){
-      return MongoWrapper.remove(collection, find);
+      return MongoWrapper.remove(collection_name, find);
     }
     ,function( err ){
       next(err);
