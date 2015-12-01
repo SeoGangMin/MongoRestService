@@ -140,7 +140,7 @@ router.post('/:database_name/:collection_name/findAndModify',function(req, res, 
   );
 });
 
-router.post('/:database_name/:collection_name/delete', function(req, res, next){
+router.post('/:database_name/:collection_name/remove', function(req, res, next){
   var database_name   = req.params.database_name;
   var collection_name = req.params.collection_name;
 
