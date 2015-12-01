@@ -157,20 +157,18 @@ router.post('/:database_name/:collection_name/remove', function(req, res, next){
   Mongo.getCollection(database_name, collection_name)
   .then(
     function( collection ){
-      return MongoWrapper.remove(collection_name, find);
+      collection.remove(find, function(err, result){
+        if(err){
+          next(err);
+        }else{
+          res.status(200).send({result:result});
+        }
+      });
     }
     ,function( err ){
       next(err);
     }
-  )
-  .then(
-    function( removed ){
-      res.status(200).send({result:'success'});
-    }
-    ,function( err ){
-      next(err);
-    }
-  )
+  );
 });
 
 module.exports = router;
